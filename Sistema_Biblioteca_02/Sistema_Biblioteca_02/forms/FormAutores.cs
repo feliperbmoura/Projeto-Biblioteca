@@ -14,9 +14,9 @@ namespace Sistema_Biblioteca_02.Forms
         private TextBox txtNome = new() { PlaceholderText = "Nome do autor", Width = 300, Top = 20, Left = 110 };
         private TextBox txtNacionalidade = new() { PlaceholderText = "Ex: Brasileiro", Width = 300, Top = 60, Left = 110 };
 
-        private Button btnSalvar = new() { Text = "💾 Salvar", Top = 100, Left = 10, Width = 100, Height = 35 };
-        private Button btnExcluir = new() { Text = "🗑️ Excluir", Top = 100, Left = 120, Width = 100, Height = 35 };
-        private Button btnLimpar = new() { Text = "🔄 Limpar", Top = 100, Left = 230, Width = 100, Height = 35 };
+        private Button btnSalvar = new() { Text = "Salvar", Top = 100, Left = 10, Width = 100, Height = 35 };
+        private Button btnExcluir = new() { Text = "Excluir", Top = 100, Left = 120, Width = 100, Height = 35 };
+        private Button btnLimpar = new() { Text = "Limpar", Top = 100, Left = 230, Width = 100, Height = 35 };
 
         private DataGridView grid = new()
         {
@@ -88,8 +88,8 @@ namespace Sistema_Biblioteca_02.Forms
             }
             else
             {
-                var autor = _context.Autores.Find.Trim(_idSelecionado);
-               if (autor != null)
+                var autor = _context.Autores.Find(new object[] { _idSelecionado });
+                if (autor != null)
                 {
                     autor.Nome = txtNome.Text.Trim();
                     autor.Nacionalidade = txtNacionalidade.Text.Trim();
@@ -138,6 +138,24 @@ namespace Sistema_Biblioteca_02.Forms
             }
         }
 
+        private void Grid_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            var row = grid.Rows[e.RowIndex];
+            _idSelecionado = (int)row.Cells["Id"].Value;
+            txtNome.Text = row.Cells["Nome"].Value?.ToString();
+            txtNacionalidade.Text = row.Cells["Nacionalidade"].Value?.ToString();
+        }
+
+        private void Limpar()
+        {
+            txtNome.Clear();
+            txtNacionalidade.Clear();
+            _idSelecionado = 0;
+            grid.ClearSelection();
+
+        }
 
     }
 }
