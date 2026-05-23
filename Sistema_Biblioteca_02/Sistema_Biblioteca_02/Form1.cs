@@ -45,7 +45,7 @@ namespace Sistema_Biblioteca_02
             Controls.AddRange(new Control[] { lblTitulo, btnAutores, btnLivros });
 
             btnAutores.Click += (s, e) => new Forms.FormAutores().ShowDialog();
-            btnLivros.Click += (s, e) => MessageBox.Show("Em breve!", "Aviso");
+            btnLivros.Click += (s, e) => new Forms.FormLivros().ShowDialog();
         }
     }
 }
