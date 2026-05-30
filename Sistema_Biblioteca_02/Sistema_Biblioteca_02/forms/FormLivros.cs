@@ -13,50 +13,63 @@ namespace Sistema_Biblioteca_02.Forms
         private Label lblAno = new() { Text = "Ano:", Top = 60, Left = 260 };
         private Label lblAutor = new() { Text = "Autor:", Top = 100, Left = 10 };
         private Label lblSinopse = new() { Text = "Sinopse:", Top = 140, Left = 10 };
+        private Label lblBusca = new() { Text = "Buscar:", Top = 20, Left = 520 };
 
         private TextBox txtTitulo = new() { PlaceholderText = "Titulo do livro", Width = 380, Top = 15, Left = 110 };
         private TextBox txtGenero = new() { PlaceholderText = "Ex: Romance", Width = 130, Top = 55, Left = 110 };
         private TextBox txtAno = new() { PlaceholderText = "Ex: 2023", Width = 100, Top = 55, Left = 300 };
         private ComboBox cmbAutor = new() { Width = 380, Top = 95, Left = 110, DropDownStyle = ComboBoxStyle.DropDownList };
         private TextBox txtSinopse = new() { PlaceholderText = "Digite a sinopse...", Width = 380, Top = 135, Left = 110, Height = 60, Multiline = true };
+        private TextBox txtBusca = new() { PlaceholderText = "Buscar por titulo/sinopse...", Width = 150, Top = 15, Left = 570 };
 
         private Button btnSalvar = new() { Text = "Salvar", Top = 210, Left = 10, Width = 100, Height = 35 };
         private Button btnExcluir = new() { Text = "Excluir", Top = 210, Left = 120, Width = 100, Height = 35 };
         private Button btnLimpar = new() { Text = "Limpar", Top = 210, Left = 230, Width = 100, Height = 35 };
+        private Button btnBuscar = new() { Text = "Buscar", Top = 13, Left = 730, Width = 80, Height = 28 };
 
         private DataGridView grid = new()
         {
             Top = 260,
             Left = 10,
-            Width = 660,
+            Width = 800,
             Height = 250,
             ReadOnly = true,
             AllowUserToAddRows = false,
             AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
         };
 
+        private Button btnAnterior = new() { Text = "< Anterior", Top = 520, Left = 10, Width = 100, Height = 30 };
+        private Button btnProximo = new() { Text = "Proximo >", Top = 520, Left = 120, Width = 100, Height = 30 };
+        private Label lblPagina = new() { Text = "Pagina 1", Top = 525, Left = 240, Width = 200 };
+
         private int _idSelecionado = 0;
+        private int _paginaAtual = 1;
+        private const int _itensPorPagina = 10;
 
         public FormLivros()
         {
             InitializeComponent();
             Text = "Cadastro de Livros";
-            Width = 700;
-            Height = 560;
+            Width = 850;
+            Height = 600;
             StartPosition = FormStartPosition.CenterScreen;
 
             Controls.AddRange(new Control[]
             {
-                lblTitulo, lblGenero, lblAno, lblAutor, lblSinopse,
-                txtTitulo, txtGenero, txtAno, cmbAutor, txtSinopse,
-                btnSalvar, btnExcluir, btnLimpar,
-                grid
+                lblTitulo, lblGenero, lblAno, lblAutor, lblSinopse, lblBusca,
+                txtTitulo, txtGenero, txtAno, cmbAutor, txtSinopse, txtBusca,
+                btnSalvar, btnExcluir, btnLimpar, btnBuscar,
+                grid,
+                btnAnterior, btnProximo, lblPagina
             });
 
             btnSalvar.Click += BtnSalvar_Click;
             btnExcluir.Click += BtnExcluir_Click;
             btnLimpar.Click += (s, e) => Limpar();
             grid.CellClick += Grid_CellClick;
+            btnBuscar.Click += (s, e) => { _paginaAtual = 1; CarregarGrid(); };
+            btnAnterior.Click += (s, e) => { if (_paginaAtual > 1) { _paginaAtual--; CarregarGrid(); } };
+            btnProximo.Click += (s, e) => { _paginaAtual++; CarregarGrid(); };
 
             CarregarAutores();
             CarregarGrid();
@@ -72,16 +85,35 @@ namespace Sistema_Biblioteca_02.Forms
 
         private void CarregarGrid()
         {
-            grid.DataSource = _context.Livros
+            var query = _context.Livros
                 .Include(l => l.Autor)
+                .Where(l => string.IsNullOrEmpty(txtBusca.Text) ||
+                            l.Titulo.Contains(txtBusca.Text) ||
+                            l.Sinopse.Contains(txtBusca.Text))
                 .Select(l => new
                 {
                     l.Id,
                     l.Titulo,
                     l.Genero,
                     Ano = l.AnoPublicacao,
+                    l.Sinopse,
                     Autor = l.Autor!.Nome
-                }).ToList();
+                });
+
+            int total = query.Count();
+            int totalPaginas = (int)Math.Ceiling(total / (double)_itensPorPagina);
+
+            if (_paginaAtual > totalPaginas && totalPaginas > 0)
+                _paginaAtual = totalPaginas;
+
+            grid.DataSource = query
+                .Skip((_paginaAtual - 1) * _itensPorPagina)
+                .Take(_itensPorPagina)
+                .ToList();
+
+            lblPagina.Text = $"Pagina {_paginaAtual} de {(totalPaginas == 0 ? 1 : totalPaginas)}";
+            btnAnterior.Enabled = _paginaAtual > 1;
+            btnProximo.Enabled = _paginaAtual < totalPaginas;
         }
 
         private void BtnSalvar_Click(object sender, EventArgs e)
@@ -189,6 +221,7 @@ namespace Sistema_Biblioteca_02.Forms
             txtTitulo.Text = row.Cells["Titulo"].Value?.ToString();
             txtGenero.Text = row.Cells["Genero"].Value?.ToString();
             txtAno.Text = row.Cells["Ano"].Value?.ToString();
+            txtSinopse.Text = row.Cells["Sinopse"].Value?.ToString();
 
             var autorNome = row.Cells["Autor"].Value?.ToString();
             foreach (var item in cmbAutor.Items)
@@ -206,6 +239,7 @@ namespace Sistema_Biblioteca_02.Forms
             txtTitulo.Clear();
             txtGenero.Clear();
             txtAno.Clear();
+            txtSinopse.Clear();
             _idSelecionado = 0;
             if (cmbAutor.Items.Count > 0)
                 cmbAutor.SelectedIndex = 0;
