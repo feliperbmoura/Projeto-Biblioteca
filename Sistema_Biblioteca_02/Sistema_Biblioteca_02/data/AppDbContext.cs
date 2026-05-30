@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sistema_Biblioteca_02.Models;
-using System.Configuration;
 
 namespace Sistema_Biblioteca_02.Data
 {
@@ -11,12 +10,8 @@ namespace Sistema_Biblioteca_02.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            var connectionString = ConfigurationManager.AppSettings["ConnectionString"];
-
-            options.UseMySql(
-                connectionString,
-                ServerVersion.AutoDetect(connectionString)
-            );
+            string caminho = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "biblioteca.db");
+            options.UseSqlite($"Data Source={caminho}");
         }
     }
 }

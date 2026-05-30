@@ -16,7 +16,9 @@ namespace Sistema_Biblioteca_02.Models
         [Range(1000, 2100, ErrorMessage = "Ano Inválido")]
         public int AnoPublicacao { get; set; }
 
+        [StringLength(500)]
+        public string Sinopse { get; set; } = string.Empty;
         public int AutorId { get; set; } 
-        public Autor? Autor { get; set; } // ? poder ser nulo ou autor não carregado no código
+        public Autor? Autor { get; set; } // (?) esse sinal significa que pode ser Nulo ou não />
     }
 }

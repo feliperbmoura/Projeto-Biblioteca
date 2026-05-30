@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Dell\\Documents\\Trabalho C# Biblioteca\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02.csproj": {}
+    "C:\\Users\\Dell\\Documents\\Projeto Biblioteca\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Dell\\Documents\\Trabalho C# Biblioteca\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02.csproj": {
+    "C:\\Users\\Dell\\Documents\\Projeto Biblioteca\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Dell\\Documents\\Trabalho C# Biblioteca\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02.csproj",
+        "projectUniqueName": "C:\\Users\\Dell\\Documents\\Projeto Biblioteca\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02.csproj",
         "projectName": "Sistema_Biblioteca_02",
-        "projectPath": "C:\\Users\\Dell\\Documents\\Trabalho C# Biblioteca\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02.csproj",
+        "projectPath": "C:\\Users\\Dell\\Documents\\Projeto Biblioteca\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02.csproj",
         "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Dell\\Documents\\Trabalho C# Biblioteca\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02\\obj\\",
+        "outputPath": "C:\\Users\\Dell\\Documents\\Projeto Biblioteca\\Sistema_Biblioteca_02\\Sistema_Biblioteca_02\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Dell\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -52,13 +52,13 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
-            "Microsoft.EntityFrameworkCore.Tools": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
+            "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[8.0.0, )"
             },
-            "Pomelo.EntityFrameworkCore.MySql": {
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
               "version": "[8.0.0, )"
             },

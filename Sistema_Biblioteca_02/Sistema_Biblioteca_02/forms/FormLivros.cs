@@ -8,26 +8,28 @@ namespace Sistema_Biblioteca_02.Forms
     {
         private readonly AppDbContext _context = new();
 
-        private Label lblTitulo = new() { Text = "Titulo:", Top = 25, Left = 10 };
-        private Label lblGenero = new() { Text = "Genero:", Top = 65, Left = 10 };
-        private Label lblAno = new() { Text = "Ano:", Top = 65, Left = 260 };
-        private Label lblAutor = new() { Text = "Autor:", Top = 105, Left = 10 };
+        private Label lblTitulo = new() { Text = "Titulo:", Top = 20, Left = 10 };
+        private Label lblGenero = new() { Text = "Genero:", Top = 60, Left = 10 };
+        private Label lblAno = new() { Text = "Ano:", Top = 60, Left = 260 };
+        private Label lblAutor = new() { Text = "Autor:", Top = 100, Left = 10 };
+        private Label lblSinopse = new() { Text = "Sinopse:", Top = 140, Left = 10 };
 
-        private TextBox txtTitulo = new() { PlaceholderText = "Titulo do livro", Width = 380, Top = 20, Left = 110 };
-        private TextBox txtGenero = new() { PlaceholderText = "Ex: Romance", Width = 130, Top = 60, Left = 110 };
-        private TextBox txtAno = new() { PlaceholderText = "Ex: 2023", Width = 100, Top = 60, Left = 300 };
-        private ComboBox cmbAutor = new() { Width = 380, Top = 100, Left = 110, DropDownStyle = ComboBoxStyle.DropDownList };
+        private TextBox txtTitulo = new() { PlaceholderText = "Titulo do livro", Width = 380, Top = 15, Left = 110 };
+        private TextBox txtGenero = new() { PlaceholderText = "Ex: Romance", Width = 130, Top = 55, Left = 110 };
+        private TextBox txtAno = new() { PlaceholderText = "Ex: 2023", Width = 100, Top = 55, Left = 300 };
+        private ComboBox cmbAutor = new() { Width = 380, Top = 95, Left = 110, DropDownStyle = ComboBoxStyle.DropDownList };
+        private TextBox txtSinopse = new() { PlaceholderText = "Digite a sinopse...", Width = 380, Top = 135, Left = 110, Height = 60, Multiline = true };
 
-        private Button btnSalvar = new() { Text = "Salvar", Top = 145, Left = 10, Width = 100, Height = 35 };
-        private Button btnExcluir = new() { Text = "Excluir", Top = 145, Left = 120, Width = 100, Height = 35 };
-        private Button btnLimpar = new() { Text = "Limpar", Top = 145, Left = 230, Width = 100, Height = 35 };
+        private Button btnSalvar = new() { Text = "Salvar", Top = 210, Left = 10, Width = 100, Height = 35 };
+        private Button btnExcluir = new() { Text = "Excluir", Top = 210, Left = 120, Width = 100, Height = 35 };
+        private Button btnLimpar = new() { Text = "Limpar", Top = 210, Left = 230, Width = 100, Height = 35 };
 
         private DataGridView grid = new()
         {
-            Top = 195,
+            Top = 260,
             Left = 10,
             Width = 660,
-            Height = 300,
+            Height = 250,
             ReadOnly = true,
             AllowUserToAddRows = false,
             AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
@@ -45,8 +47,8 @@ namespace Sistema_Biblioteca_02.Forms
 
             Controls.AddRange(new Control[]
             {
-                lblTitulo, lblGenero, lblAno, lblAutor,
-                txtTitulo, txtGenero, txtAno, cmbAutor,
+                lblTitulo, lblGenero, lblAno, lblAutor, lblSinopse,
+                txtTitulo, txtGenero, txtAno, cmbAutor, txtSinopse,
                 btnSalvar, btnExcluir, btnLimpar,
                 grid
             });
@@ -105,6 +107,19 @@ namespace Sistema_Biblioteca_02.Forms
                 return;
             }
 
+            int autorId = (int)cmbAutor.SelectedValue;
+            bool tituloExiste = _context.Livros.Any(l =>
+                l.Titulo.ToLower() == txtTitulo.Text.Trim().ToLower() &&
+                l.AutorId == autorId &&
+                l.Id != _idSelecionado);
+
+            if (tituloExiste)
+            {
+                MessageBox.Show("Este autor ja possui um livro com este titulo!", "Validacao",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if (_idSelecionado == 0)
             {
                 var livro = new Livro
@@ -112,7 +127,8 @@ namespace Sistema_Biblioteca_02.Forms
                     Titulo = txtTitulo.Text.Trim(),
                     Genero = txtGenero.Text.Trim(),
                     AnoPublicacao = ano,
-                    AutorId = (int)cmbAutor.SelectedValue
+                    AutorId = autorId,
+                    Sinopse = txtSinopse.Text.Trim()
                 };
                 _context.Livros.Add(livro);
             }
@@ -124,7 +140,8 @@ namespace Sistema_Biblioteca_02.Forms
                     livro.Titulo = txtTitulo.Text.Trim();
                     livro.Genero = txtGenero.Text.Trim();
                     livro.AnoPublicacao = ano;
-                    livro.AutorId = (int)cmbAutor.SelectedValue;
+                    livro.AutorId = autorId;
+                    livro.Sinopse = txtSinopse.Text.Trim();
                     _context.Livros.Update(livro);
                 }
             }
